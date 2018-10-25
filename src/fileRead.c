@@ -8,8 +8,12 @@ int main(){
 
 	if((file = fopen("userID.txt", "r+")) != NULL){
 		fscanf(file, "%s", fileData);
-    	fclose(file);
-   	}
+  	fclose(file);
+		
+		printf("%s", fileData);
+	}else{
+		printf("error");
+	}
 
 	return 0;
 }
