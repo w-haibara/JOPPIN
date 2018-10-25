@@ -1,17 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void fetchUserID(char* fileData);
+int fetchUserID(char* fileData);
 
 int main(){
 	char fileData[100];
-
-	fetchUserID(fileData);
-	
-	printf("%s\n", fileData);
-	//サーバーにfileDataを送る
-	
 	while(1){
+		sleep(5);
+		if(fetchUserID(fileData) == 0) printf("%s\n", fileData);
+		//サーバーにfileDataを送る
+	
 		//サーバーからの返答を待つ
 		char json[100];
 		//jsonを文字列として読み込む
@@ -26,8 +24,9 @@ int main(){
 	return 0;
 }
 
-void fetchUserID(char* fileData){
+int fetchUserID(char* fileData){
 	FILE *file;
+	int retNum = 0;
 
 	const char command[20] = "python qrReader.py";
 	system(command);
@@ -35,5 +34,9 @@ void fetchUserID(char* fileData){
 	if((file = fopen("userID.txt", "r+")) != NULL){
 		fscanf(file, "%s", fileData);
     	fclose(file);
-   	}
+   	}else{
+		retNum = 1;
+	}
+
+	return retNum;
 }
