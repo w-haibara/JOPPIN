@@ -17,7 +17,7 @@ const int pin_gyro = 1;
 byte buf[4];
 int num = 0;
 
-byte data = 0x55;
+byte data = 0x00;
 
 void setup (void) {
   Serial.begin(9800);
@@ -34,31 +34,36 @@ void setup (void) {
 }
 
 void loop() {
-
+  /*
+    サーボ駆動部
+  */
   if ((buf[0] == 0x10) && (buf[1] == 0x1)) {
     servo.write(servo_rad2);
   } else if ((buf[0] == 0x10) && (buf[1] == 0x0)) {
     servo.write(servo_rad1);
   }
 
+
   /*
-    uint8_t val_distance = analogRead(pin_distance);
-    uint8_t val_gyro = analogRead(pin_gyro);
-    uint8_t val_sw = digitalRead(pin_sw);
-
-    val_distance = (val_distance > 200) ? 1 : 0;
-
-    val_gyro = ((val_gyro == 0) || (val_gyro == 1)) ? 3 : val_gyro;
-    if (val_gyro > 200) {
-      val_gyro = 1;//施錠時
-    } else if (val_gyro < 100) {
-      val_gyro = 0;//解錠時
-    }
-
-    val_sw = (val_sw == 0) ? 1 : 0;
-
-    data = ((val_distance << 6) & B01000000) + ((val_sw << 5) & B00100000) + map(val_gyro, 0, 255, 0, 31);
+     センサー読み取り部
   */
+  uint8_t val_distance = analogRead(pin_distance);
+  uint8_t status_distance = 0;
+
+  uint8_t val_gyro = analogRead(pin_gyro);
+  uint8_t status_gyro = 0;
+
+  uint8_t status_sw = 1 - digitalRead(pin_sw);
+
+  status_distance = (val_distance > 200) ? 1 : 0;
+
+  if (val_gyro > 200) {
+    status_gyro = 0;//施錠時
+  } else if (val_gyro < 100) {
+    status_gyro = 1;//解錠時
+  }
+
+  data = ((status_distance<<2)&B00000100)+((status_gyro<<1)&B00000010)+((status_sw<<2)&B00000001);
 }
 
 void send() {
