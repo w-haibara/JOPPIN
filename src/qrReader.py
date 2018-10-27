@@ -16,11 +16,11 @@ while True:
 
     #cv2.namedWindow('camera', cv2.WINDOW_NORMAL)
     #cv2.setWindowProperty('camera', cv2.WND_PROP_FULLSCREEN, 1)
-    #cv2.imshow("camera", camera)
+    cv2.imshow("camera", camera)
 
     for symbol in image:
         
-        #print('%s' % symbol.data)
+        print('%s' % symbol.data)
         
         f = open('userID.txt', 'w')
         f.write('%s' % symbol.data)
